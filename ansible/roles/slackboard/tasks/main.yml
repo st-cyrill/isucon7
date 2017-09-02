@@ -1,0 +1,29 @@
+- name: exists /usr/local/slackboard
+  file:
+    path: /usr/local/slackboard
+    state: directory
+
+- name: copy slackboard archive
+  copy:
+    src: slackboard_linux_generic.tgz
+    dest: /usr/local/src/slackboard.tgz
+
+- name: extract slackboard binary
+  unarchive:
+    src: /usr/local/src/slackboard.tgz
+    dest: /usr/local/slackboard
+    mode: 0755
+    owner: root
+    group: root
+
+# --- set config
+- name: exists /etc/slackboard
+  file:
+    path: /etc/slackboard
+    state: directory
+
+- name: copy slackboard config
+  template:
+    src: etc/slackboard/slackboard.toml.j2
+    dest: /etc/slackboard/slackboard.toml
+
