@@ -16,6 +16,12 @@
     owner: root
     group: root
 
+- name: link /usr/local/bin/slackboard-cli
+  file:
+    src: /usr/local/slackboard/bin/slackboard-cli
+    dest: /usr/local/bin/slackboard-cli
+    state: link
+
 # --- set config
 - name: exists /etc/slackboard
   file:
@@ -26,4 +32,23 @@
   template:
     src: etc/slackboard/slackboard.toml.j2
     dest: /etc/slackboard/slackboard.toml
+
+- name: exists /usr/lib/systemd/system
+  file:
+    path: /usr/lib/systemd/system
+    state: directory
+    recurse: true
+
+- name: copy systemd service unit
+  copy:
+    src: usr/lib/systemd/system/slackboard.service
+    dest: /usr/lib/systemd/system/slackboard.service
+    owner: root
+    group: root
+
+- name: start slackboard
+  systemd:
+    name: slackboard
+    state: started
+    daemon_reload: true
 
